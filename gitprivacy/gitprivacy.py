@@ -48,6 +48,7 @@ class GitPrivacyConfig:
             self.mode = config.get_value(self.SECTION, 'mode', 'reduce')
             self.pattern = config.get_value(self.SECTION, 'pattern', '')
             self.limit = config.get_value(self.SECTION, 'limit', '')
+            self.limitDay = config.get_value(self.SECTION, "limitDay", '')
             self.password = config.get_value(self.SECTION, 'password', '')
             self.salt = config.get_value(self.SECTION, 'salt', '')
             self.ignoreTimezone = bool(config.get_value(
@@ -93,7 +94,7 @@ class GitPrivacyConfig:
                 "following time unit identifiers: "
                 "M: month, d: day, h: hour, m: minute, s: second.",
                 preserve_paragraphs=True))
-        return ResolutionDateRedacter(self.pattern, self.limit, self.mode)
+        return ResolutionDateRedacter(self.pattern, self.limit, self.limitDay, self.mode)
 
     def write_config(self, **kwargs):
         """Write config"""
