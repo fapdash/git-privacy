@@ -55,9 +55,12 @@ class ResolutionDateRedacter(DateRedacter):
             timestamp = timestamp.replace(minute=0)
         if "s" in self.pattern:
             timestamp = timestamp.replace(second=0)
-        timestamp = self._enforce_limit(timestamp)
-        timestamp = self._enforce_limit_day(timestamp)
+        timestamp = self.enforce_limits(timestamp)
         return timestamp
+
+    def enforce_limits(self, timestamp: datetime) -> datetime:
+        timestamp = self._enforce_limit(timestamp)
+        return self._enforce_limit_day(timestamp)
 
     def _enforce_limit(self, timestamp: datetime) -> datetime:
         if not self.limit:
