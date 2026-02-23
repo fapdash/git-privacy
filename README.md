@@ -204,11 +204,11 @@ your last commit. If false, it will abort the commit. Default is true.
 
 _Note: This requires that the `pre-commit` hook is set by `git-privacy init`_.
 
-### `privacy.limit`
+### `privacy.limitHour`
 If set, redacted timestamps will be rounded towards the given interval.
 The format is `hh-hh` where `hh` is a value between 0 and 24.
 
-Example: `limit = 9-17` means that commits at 17:30 (5:30pm) are set to 17:00.
+Example: `limitHour = 9-17` means that commits at 17:30 (5:30pm) are set to 17:00.
 By default limits are disabled.
 
 ### `privacy.limitDay`
