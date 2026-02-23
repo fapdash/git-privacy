@@ -58,7 +58,7 @@ class GitPrivacyConfig:
                     'Not allowed to use the deprecated privacy.limit and privacy.limitHour at the same time.'
                     'Only use privacy.limitHour instead.'
                 ))
-            self.limitDay = config.get_value(self.SECTION, "limitDay", '')
+            self.limitDay = config.get_value(self.SECTION, "limitWeekday", '')
             self.password = config.get_value(self.SECTION, 'password', '')
             self.salt = config.get_value(self.SECTION, 'salt', '')
             self.ignoreTimezone = bool(config.get_value(
