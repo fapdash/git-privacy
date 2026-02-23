@@ -211,11 +211,11 @@ The format is `hh-hh` where `hh` is a value between 0 and 24.
 Example: `limitHour = 9-17` means that commits at 17:30 (5:30pm) are set to 17:00.
 By default limits are disabled.
 
-### `privacy.limitDay`
+### `privacy.limitWeekday`
 If set, redacted timestamps will be moved backwards to be on one of the provided weekdays.
 The format is either an interval `w-w` or a comma separated list of weekdays 'w,w,w,w' where `w` is a value between 0 (monday) and 6 (sunday).
 
-Example: `limitDays = 0-4` means that commits on saturday and sunday will be set to the previous friday.
+Example: `limitWeekday = 0-4` means that commits on saturday and sunday will be set to the previous friday.
 By default the weekday limit is disabled.
 
 ### `privacy.mode`
