@@ -47,17 +47,19 @@ class GitPrivacyConfig:
         with self.repo.config_reader() as config:
             self.mode = config.get_value(self.SECTION, 'mode', 'reduce')
             self.pattern = config.get_value(self.SECTION, 'pattern', '')
-            self.limit = config.get_value(self.SECTION, "limitHour", config.get_value(self.SECTION, 'limit', ''))
-            if config.get_value(self.SECTION, 'limit', False):
+            self.limit = config.get_value(self.SECTION, "limitHour",
+                                          config.get_value(self.SECTION, 'limit', ''))
+            if config.has_option(self.SECTION, 'limit'):
                 click.echo(click.wrap_text(
-                    'The option privacy.limit is deprecated and will be removed in future versions.'
+                    'Warning: The option privacy.limit is deprecated and will be removed in future versions.'
                     'Use privacy.limitHour instead.'
                 ))
-            if config.get_value(self.SECTION, 'limit', False) and config.get_value(self.SECTION, 'limitHour', False):
+            if config.has_option(self.SECTION, 'limit') and config.has_option(self.SECTION, 'limitHour'):
                 click.echo(click.wrap_text(
-                    'Not allowed to use the deprecated privacy.limit and privacy.limitHour at the same time.'
+                    'Error: Not allowed to use the deprecated privacy.limit and privacy.limitHour at the same time.'
                     'Only use privacy.limitHour instead.'
-                ))
+                ), err=True)
+                ctx.exit(1)
             self.limitDay = config.get_value(self.SECTION, "limitWeekday", '')
             self.password = config.get_value(self.SECTION, 'password', '')
             self.salt = config.get_value(self.SECTION, 'salt', '')
@@ -104,7 +106,12 @@ class GitPrivacyConfig:
                 "following time unit identifiers: "
                 "M: month, d: day, h: hour, m: minute, s: second.",
                 preserve_paragraphs=True))
-        return ResolutionDateRedacter(self.pattern, self.limit, self.limitDay, self.mode)
+        try:
+            redacter = ResolutionDateRedacter(self.pattern, self.limit, self.limitDay, self.mode)
+        except ValueError as e:
+            click.echo(click.wrap_text(str(e)))
+            ctx.exit(1)
+        return redacter
 
     def write_config(self, **kwargs):
         """Write config"""
