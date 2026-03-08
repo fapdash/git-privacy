@@ -1,4 +1,3 @@
-# pylint: disable=invalid-name,too-many-public-methods,line-too-long
 import copy
 import git  # type: ignore
 import locale
@@ -240,7 +239,7 @@ class TestGitPrivacy(unittest.TestCase):
         with self.runner.isolated_filesystem():
             self.setUpRepo()
             self.setConfig()
-            a = self.addCommit("a")
+            self.addCommit("a")
             result = self.invoke('redate abc')
             self.assertEqual(result.exit_code, 128)
 
@@ -248,8 +247,8 @@ class TestGitPrivacy(unittest.TestCase):
         with self.runner.isolated_filesystem():
             self.setUpRepo()
             self.setConfig()
-            a = self.addCommit("a")
-            b = self.addCommit("b")
+            self.addCommit("a")
+            self.addCommit("b")
             result = self.invoke('redate HEAD')
             self.assertEqual(result.exit_code, 128)
 
@@ -258,15 +257,15 @@ class TestGitPrivacy(unittest.TestCase):
             self.setUpRepo()
             remote = self.setUpRemote()
             self.setConfig()
-            a = self.addCommit("a")
+            self.addCommit("a")
             remote.push(self.repo.active_branch, set_upstream=True)
             result = self.invoke('redate')
             self.assertEqual(result.exit_code, 3)
             result = self.invoke('redate -f')
             self.assertEqual(result.exit_code, 0)
             remote.push(force=True)
-            b = self.addCommit("b")
-            c = self.addCommit("c")
+            self.addCommit("b")
+            self.addCommit("c")
             result = self.invoke('redate')
             self.assertEqual(result.exit_code, 3)
             result = self.invoke('redate HEAD~2')
@@ -318,7 +317,7 @@ class TestGitPrivacy(unittest.TestCase):
         with self.runner.isolated_filesystem():
             self.setUpRepo()
             self.setConfig()
-            a = self.addCommit("a")
+            self.addCommit("a")
             result = self.invoke('check')
             self.assertEqual(result.exit_code, 0)
             self.assertEqual(result.output, "")
@@ -330,7 +329,7 @@ class TestGitPrivacy(unittest.TestCase):
             self.git.config(["privacy.ignoreTimezone", "false"])  # default is ignore
             os.environ['TZ'] = 'Europe/London'
             time.tzset()
-            a = self.addCommit("a")
+            self.addCommit("a")
             os.environ['TZ'] = 'Europe/Berlin'
             time.tzset()
             result = self.invoke('check')
@@ -365,7 +364,7 @@ class TestGitPrivacy(unittest.TestCase):
             self.git.config(["privacy.ignoreTimezone", "true"])
             os.environ['TZ'] = 'Europe/London'
             time.tzset()
-            a = self.addCommit("a")
+            self.addCommit("a")
             os.environ['TZ'] = 'Europe/Berlin'
             time.tzset()
             result = self.invoke('check')
@@ -381,7 +380,7 @@ class TestGitPrivacy(unittest.TestCase):
             self.assertEqual(result.exit_code, 0)
             os.environ['TZ'] = 'Europe/London'
             time.tzset()
-            a = self.addCommit("a")
+            self.addCommit("a")
             os.environ['TZ'] = 'Europe/Berlin'
             time.tzset()
             self.addCommit("b")  # should not fail
@@ -392,7 +391,7 @@ class TestGitPrivacy(unittest.TestCase):
             self.assertEqual(result.exit_code, 0)
             os.environ['TZ'] = 'Europe/London'
             time.tzset()
-            a = self.addCommit("a")
+            self.addCommit("a")
             os.environ['TZ'] = 'Europe/Berlin'
             time.tzset()
             with self.assertRaises(git.GitCommandError):
@@ -406,7 +405,7 @@ class TestGitPrivacy(unittest.TestCase):
             os.environ['TZ'] = 'Europe/London'
             time.tzset()
             self.git.config(["user.email", "doe@example.com"])
-            a = self.addCommit("a")
+            self.addCommit("a")
             os.environ['TZ'] = 'Europe/Berlin'
             time.tzset()
             result = self.invoke('check')
@@ -519,7 +518,7 @@ class TestGitPrivacy(unittest.TestCase):
             self.git.config(["privacy.password", "passw0ord"])
             result = self.invoke('init')
             self.assertEqual(result.exit_code, 0)
-            a = self.addCommit("a")
+            self.addCommit("a")
             self.git.config(["privacy.password", "geheim"])
             result = self.invoke('log')
             self.assertEqual(result.exit_code, 0)
@@ -547,8 +546,6 @@ class TestGitPrivacy(unittest.TestCase):
 
 
     def test_commitdateupdate(self):
-        import gitprivacy.encoder.msgembed as msgenc
-        from gitprivacy import utils
         with self.runner.isolated_filesystem():
             self.setUpRepo()
             self.setConfig()
@@ -650,7 +647,7 @@ class TestGitPrivacy(unittest.TestCase):
             self.git.config(["user.email", email])
             a = self.addCommit("a")
             self.assertEqual(a.author.email, email)
-            result = self.invoke(f'redact-email')
+            result = self.invoke('redact-email')
             self.assertEqual(result.exit_code, 0)
             result = self.invoke(f'redact-email {email}')
             self.assertEqual(result.exit_code, 0)
@@ -736,7 +733,7 @@ class TestGitPrivacy(unittest.TestCase):
 
     def test_globaltemplate_init_outside_repo(self):
         home = ".home"
-        templdir = os.path.join(home, ".git_template")
+        os.path.join(home, ".git_template")
         with self.runner.isolated_filesystem(), \
                 self.runner.isolation(env=dict(HOME=home)):
             os.mkdir(home)
@@ -755,7 +752,7 @@ class TestGitPrivacy(unittest.TestCase):
             with open(hookpath, "w") as f:
                 f.write("/bin/sh\n\necho DEADBEEF")
             os.chmod(hookpath, 0o755)
-            a = self.addCommit("a")
+            self.addCommit("a")
             res, stdout, stderr = self.git.execute(
                 ["git", "cherry-pick", "--keep-redundant-commits", "HEAD"],
                 with_extended_output=True,
@@ -769,7 +766,7 @@ class TestGitPrivacy(unittest.TestCase):
         with self.runner.isolated_filesystem():
             self.setUpRepo()
             self.setConfig()
-            a = self.addCommit("a")
+            self.addCommit("a")
             c = self.addCommit("c")
             b = self.addCommit("b")
             def _log():
@@ -830,7 +827,7 @@ class TestGitPrivacy(unittest.TestCase):
             result = self.invoke('redate-rewrites')
             self.assertEqual(result.exit_code, 128)
             # check redate without pending rewrites
-            a = self.addCommit("a")
+            self.addCommit("a")
             result = self.invoke('redate-rewrites')
             self.assertEqual(result.exit_code, 0)
             self.assertEqual(result.output, "No pending rewrites to redact\n")
@@ -843,8 +840,8 @@ class TestGitPrivacy(unittest.TestCase):
             self.assertEqual(res, 0)
             self.assertNotIn("redate-rewrites", stderr)
             # add two more commits and do some rebasing
-            b = self.addCommit("b")
-            c = self.addCommit("c")
+            self.addCommit("b")
+            self.addCommit("c")
             # swap last two commits
             def _rebase_cmds():
                 return (

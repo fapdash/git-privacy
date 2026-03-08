@@ -47,7 +47,7 @@ class BasicEncoder(Encoder):
                     sep = linesep * 2
                 new_msg = commit.message + sep + msg_extra
         elif callable(msg_extra):
-            rpl_msg = msg_extra(commit.message)  # pylint: disable=not-callable
+            rpl_msg = msg_extra(commit.message)
             if rpl_msg != commit.message:
                 new_msg = rpl_msg
         else:
@@ -58,7 +58,6 @@ class BasicEncoder(Encoder):
             str,
             Callable[[str], str]
     ]:
-        # pylint: disable=no-self-use,unused-argument
         return ""
 
 
@@ -70,4 +69,5 @@ class BasicDecoder(Decoder):
                 commit.committed_datetime)
 
 
-from .msgembed import MessageEmbeddingEncoder, MessageEmbeddingDecoder
+from .msgembed import MessageEmbeddingEncoder as MessageEmbeddingEncoder # noqa: E402
+from .msgembed import MessageEmbeddingDecoder as MessageEmbeddingDecoder # noqa: E402

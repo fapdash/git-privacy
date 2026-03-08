@@ -36,7 +36,7 @@ class GitPrivacyConfig:
         self.gitdir = gitdir
         try:
             self.repo = git.Repo(gitdir, search_parent_directories=True)
-        except git.InvalidGitRepositoryError as e:
+        except git.InvalidGitRepositoryError:
             self.repo = None
         else:
             self.read_config()
@@ -226,7 +226,7 @@ def do_log(ctx: click.Context, revision_range: str, paths: click.Path):
         a_date, c_date = decoder.decode(commit)
         if a_date:
             buf.append(f"Author:   {commit.author.name} <{commit.author.email}>")  # noqa: E501
-            buf.append(click.style(f"Date: {fmtdate(commit.authored_datetime)}",  # noqa: E501)
+            buf.append(click.style(f"Date: {fmtdate(commit.authored_datetime)}",  # noqa: E501
                                    fg='red'))
             buf.append(click.style(f"RealDate: {fmtdate(a_date)}", fg='green'))
         else:
@@ -234,7 +234,7 @@ def do_log(ctx: click.Context, revision_range: str, paths: click.Path):
             buf.append(f"Date:   {fmtdate(commit.authored_datetime)}")
         if c_date:
             buf.append(f"Commit:   {commit.committer.name} <{commit.committer.email}>")  # noqa: E501
-            buf.append(click.style(f"Date: {fmtdate(commit.committed_datetime)}",  # noqa: E501)
+            buf.append(click.style(f"Date: {fmtdate(commit.committed_datetime)}",  # noqa: E501
                                    fg='red'))
             buf.append(click.style(f"RealDate: {fmtdate(c_date)}", fg='green'))
         else:
@@ -291,7 +291,7 @@ def do_redate(ctx: click.Context, startpoint: str,
         return
 
     if repo.is_dirty():
-        click.echo(f"Cannot redate: You have unstaged changes.", err=True)
+        click.echo("Cannot redate: You have unstaged changes.", err=True)
         ctx.exit(1)
     rewriter = FilterRepoRewriter(repo, encoder, ctx.obj.replace)
     single_commit = next(repo.head.commit.iter_parents(), None) is None
@@ -340,7 +340,7 @@ def redate_rewrites(ctx: click.Context):
         click.echo("No pending rewrites to redact")
         ctx.exit(0)
     if repo.is_dirty():
-        click.echo(f"Cannot redate: You have unstaged changes.", err=True)
+        click.echo("Cannot redate: You have unstaged changes.", err=True)
         ctx.exit(1)
 
     # determine commits to redate
